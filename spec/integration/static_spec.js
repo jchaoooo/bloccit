@@ -14,7 +14,7 @@ describe("routes : static", () => {
     });
   });
 
-  describe("GET /marco", () => {
+/*  describe("GET /marco", () => {
     it("should return status code 200 and the body should contain 'polo'", (done) => {
       request.get(marco, (err, res, body) => {
         expect(res.statusCode).toBe(200);
@@ -22,6 +22,6 @@ describe("routes : static", () => {
         done();
       });
     });
-  });
+  });*/
 
 });
