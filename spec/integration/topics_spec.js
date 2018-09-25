@@ -121,7 +121,7 @@ describe("routes : topics", () => {
           title: "JavaScript Frameworks",
           description: "There are a lot of them"
         }
-      }
+      };
         request.post(options,
           (err, res, body) => {
             expect(err).toBeNull();
