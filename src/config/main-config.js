@@ -13,7 +13,7 @@ module.exports = {
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(expressValidator());
     app.use(session({
-      secret: "do not let this get checked into version control",
+      secret: process.env.cookieSecret,
       resave: false,
       saveUninitialized: false,
       cookie: { maxAge: 60000 }
