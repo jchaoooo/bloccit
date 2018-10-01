@@ -1,36 +1,23 @@
-// #1
-const ApplicationPolicy = require("./application");
+const ApplicationPolicy = require('./application');
 
-module.exports = class PostPolicy extends ApplicationPolicy {
+module.exports = class TopicPolicy extends ApplicationPolicy {
+    new() {
+        return this.user != null;
+    }
 
-//member or admin
- new() {
-   return (this.user != null || this._isAdmin());
- }
+    create() {
+        return this.user != null;
+    }
 
-//member or admin
- create() {
-   return (this.user != null || this._isAdmin());
- }
+    edit() {
+        return this._isAdmin() || this._isOwner();
+    }
 
-//all
- show() {
-   return true;
- }
+    update() {
+        return this.edit();
+    }
 
-//owner or admin
- edit() {
-   return this.user != null &&
-     this.record && (this._isOwner() || this._isAdmin());
- }
-
-//owner or admin
- update() {
-   return this.edit();
- }
-
-//owner or admin
- destroy() {
-   return this.update();
- }
+    destroy() {
+        return this.update();
+    }
 }
