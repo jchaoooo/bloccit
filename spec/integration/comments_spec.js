@@ -137,7 +137,7 @@ describe('routes : comments', () => {
 		});
 	});
 
-	// Begin Member test context
+	// Begin Owner test context
 	// #1 Define a context for a signed in user.
 	describe('signed in user performing CRUD actions for Comment', () => {
 		beforeEach(done => {
@@ -205,4 +205,83 @@ describe('routes : comments', () => {
 			});
 		});
 	}); //end context for signed in user
+
+	//Begin Member test content
+	describe("signed in member performing CRUD actions for comment", () => {
+		beforeEach((done) => {
+			User.create({
+				email: "bob@example.com",
+				password: "123123",
+				role: "member"
+			})
+			.then((user) => {
+				request.get({ // mock authentication
+					url: "http://localhost:3000/auth/fake",
+					form: {
+						role: "member", // mock authenticate as another member user
+						userId: user.id,
+						email: user.email
+					}
+				},
+					(err, res, body) => {
+						done();
+					}
+				);
+			});
+		});
+
+		describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+			it("should not delete the comment with associated ID of another member", (done) => {
+				Comment.all().then(comments => {
+					const commentCountBeforeDelete = comments.length;
+					expect(commentCountBeforeDelete).toBe(1);
+
+					request.post(`${base}/${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`, (err, res, body) => {
+						Comment.all().then(comment => {
+							expect(comment.length).toBe(commentCountBeforeDelete);
+							done();
+						});
+					});
+				});
+			});
+		});
+	});
+
+	//Begin Admin Test content
+	describe("admin performing CRUD actions for Comment", () => {
+		beforeEach((done) => {
+			User.create({
+				email: 'admin@test.com',
+				password: "123456",
+				role: "admin"
+			})
+			.then((user) => {
+				request.get({
+					url: "http://localhost:3000/auth/fake",
+					form: {
+						role: user.role,
+						userId: user.id,
+						email: user.email
+					}
+				}, (err, res, body) => {
+					done();
+				});
+			});
+		)};
+
+		describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+			it("should delete the comment with associated ID", (done) => {
+				Comment.all().then((comments) => {
+					const commentCountBeforeDelete = comments.length;
+					expect(commentCountBeforeDelete).toBe(1);
+					request.post(`${base}/${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`, (err, res, body) => {
+						expect(res.statusCode).toBe(302);
+						expect(comments.length).toBe(commentCountBeforeDelete);
+						done();
+					});
+				});
+			});
+		});
+	});
+
 });
