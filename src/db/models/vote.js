@@ -4,6 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     value: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      default: 0,
       validate: {
         isIn: [[-1, 1]]
       }

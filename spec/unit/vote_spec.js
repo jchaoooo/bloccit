@@ -110,6 +110,22 @@ describe("Vote", () => {
         done();
       });
     });
+
+    it("should not create a vote other than 1 or -1 on a post for a user", (done) => {
+      Vote.create({
+        value: 0,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+        //won't be evaluated
+        done();
+      })
+      .catch((err) => {
+        expect(err.message).toContain("Validation isIn on value failed");
+        done();
+      });
+    });
   });
 
   describe("#setUser()", () => {
@@ -208,6 +224,46 @@ describe("Vote", () => {
           expect(associatedPost.title).toBe("My first visit to Proxima Centauri b");
           done();
         });
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+  });
+
+  describe("#hasUpvoteFor()", () => {
+    it("should return true if user has an upvote on this post", (done) => {
+      Vote.create({
+        value: 1,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+        this.post.votes = [vote];
+        const hasUpvote = this.post.hasUpvoteFor(vote.userId);
+        expect(hasUpvote).toBe(true);
+        done();
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+  });
+
+  describe("#hasDownvoteFor()", () => {
+    it("should return true if user has an downvote on this post", (done) => {
+      Vote.create({
+        value: -1,
+        postId: this.post.id,
+        userId: this.user.id
+      })
+      .then((vote) => {
+        this.post.votes = [vote];
+        const hasDownvote = this.post.hasDownvoteFor(vote.userId);
+        expect(hasDownvote).toBe(true);
+        done();
       })
       .catch((err) => {
         console.log(err);
