@@ -30,6 +30,10 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "userId",
       as: "comments"
     });
+    User.hasMany(models.Vote, {
+      foreignKey: "userId",
+      as: "votes"
+    });
     // associations can be defined here
   };
   return User;

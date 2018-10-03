@@ -236,7 +236,7 @@ describe('routes : comments', () => {
 					const commentCountBeforeDelete = comments.length;
 					expect(commentCountBeforeDelete).toBe(1);
 
-					request.post(`${base}/${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`, (err, res, body) => {
+					request.post(`${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`, (err, res, body) => {
 						Comment.all().then(comment => {
 							expect(comment.length).toBe(commentCountBeforeDelete);
 							done();
@@ -267,17 +267,20 @@ describe('routes : comments', () => {
 					done();
 				});
 			});
-		)};
+		});
 
 		describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
 			it("should delete the comment with associated ID", (done) => {
 				Comment.all().then((comments) => {
 					const commentCountBeforeDelete = comments.length;
 					expect(commentCountBeforeDelete).toBe(1);
-					request.post(`${base}/${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`, (err, res, body) => {
+					request.post(`${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`, (err, res, body) => {
 						expect(res.statusCode).toBe(302);
-						expect(comments.length).toBe(commentCountBeforeDelete);
-						done();
+						Comment.all().then(comments => {
+							expect(err).toBeNull();
+							expect(comments.length).toBe(commentCountBeforeDelete - 1);
+							done();
+						});
 					});
 				});
 			});
