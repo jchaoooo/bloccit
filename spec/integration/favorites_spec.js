@@ -111,6 +111,7 @@ describe("routes : favorites", () => {
           url: `${base}/${this.topic.id}/posts/${this.post.id}/favorites/create`
         };
         request.post(options, (err, res, body) => {
+          console.log("USER ID!!!!!" + this.user.id + `POST ID!!!!` + this.post.id);
           Favorite.findOne({
             where: {
               userId: this.user.id,

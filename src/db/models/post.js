@@ -66,6 +66,13 @@ module.exports = (sequelize, DataTypes) => {
         return favorite.userId == userId
       });
     };
+
+    Post.afterCreate((post, callback) => {
+      return models.Favorite.create({
+        userId: post.userId,
+        postId: post.id
+      });
+    });
   };
   return Post;
 };
